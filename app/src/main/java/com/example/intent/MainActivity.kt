@@ -3,6 +3,10 @@ package com.example.intent
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import com.example.intent.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -10,9 +14,10 @@ class MainActivity : AppCompatActivity() {
         ActivityMainBinding.inflate(layoutInflater)
     }
 
+    private lateinit var parl: ActivityResultLauncher<Intent>
+
     companion object {
         const val PARAMETRO_EXTRA = "PARAMETRO_EXTRA"
-        const val PARAMETRO_REQUEST_CODE = 0
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,19 +25,19 @@ class MainActivity : AppCompatActivity() {
         setContentView(amb.root)
         supportActionBar?.subtitle = "Main Activity"
 
+        parl = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {result ->
+            if (result?.resultCode == RESULT_OK) {
+                result.data?.getStringExtra(PARAMETRO_EXTRA).let { parametro ->
+                    amb.parametroTv.text = parametro
+                }
+            }
+        }
+
         amb.entrarParametroBt.setOnClickListener {
             val parametroIntent: Intent = Intent(this, ParametroActivity::class.java)
             parametroIntent.putExtra(PARAMETRO_EXTRA, amb.parametroTv.text.toString())
-            startActivityForResult(parametroIntent, PARAMETRO_REQUEST_CODE)
+
+            parl.launch(parametroIntent)
         }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == PARAMETRO_REQUEST_CODE && requestCode == RESULT_OK) {
-            val parametroRecebido = data?.let { parametro ->
-                amb.parametroTv.text = parametro
-            }
     }
 }
