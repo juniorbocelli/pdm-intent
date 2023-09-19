@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Intent</string>
+    <string name="abrir_navegador">Abrir Navegador</string>
+    <string name="chamar_n_mero">Chamar número</string>
+    <string name="abrir_discador">Abrir discador</string>
+    <string name="pegar_imagem">Pegar imagem</string>
+    <string name="selecionar_app">Selecionar app</string>
 </resources>
